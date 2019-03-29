@@ -1,4 +1,4 @@
-import "Phishable.sol";
+import "browser/Phishable.sol";
 
 contract AttackContract {
     Phishable phishableContract;
