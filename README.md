@@ -13,7 +13,7 @@ As with all software, there is a chance that a smart contract may be exploited. 
 | Strengths | This assignment makes students aware of a type of security issue, attack scenario, and a best practice when writing code for smart contracts. |
 | Weaknesses | Effective secure programming requires the discipline of strict adherence to many, potentially unintuitive guidelines for which it is impractical to present the breadth of in a single lab. |
 | Dependencies | Some programming knowledge and an internet-connected computer with a suitable browser for use of [the Remix IDE][Remix]. |
-| Variants | There are many vulnerabilities which could be the focus instead. |
+| Variants | There are many other vulnerabilities which could be the focus of this lab instead. |
 
 ## Assignment Instructions
 1. In Solidity, there is a global variable called `tx.origin`, which contains the address of the account that originally sent the call or the transaction. In this lab, we will explore why using `tx.origin` as a form of authentication can lead to exploitation.
