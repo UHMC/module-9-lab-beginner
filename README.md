@@ -11,7 +11,7 @@ As with all software, there is a chance that a smart contract may be exploited. 
 | Audience | Appropriate for CS1 or a later course. |
 | Difficulty | Beginner. |
 | Strengths | This assignment makes students aware of a type of security issue, attack scenario, and a best practice when writing code for smart contracts. |
-| Weaknesses | Effective secure programming requires the discipline of strict adherence to many, potentially unintuitive guidelines which are impractical to present a breadth of in a single lab. |
+| Weaknesses | Effective secure programming requires the discipline of strict adherence to many, potentially unintuitive guidelines which are impractical to present the breadth of in a single lab. |
 | Dependencies | Some programming knowledge and an internet-connected computer with a suitable browser for use of [the Remix IDE][Remix]. |
 | Variants | There are many vulnerabilities which could be the focus instead. |
 
