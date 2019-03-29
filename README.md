@@ -1,4 +1,4 @@
-# Module 9 - Beginner Lab: Gone Phishing
+# Module 9 - Beginner Lab: Smart Contract Security
 
 ## Background
 As with all software, there is a chance that a smart contract may be exploited. In the case of smart contracts, though, there is an especially high risk, since transactions are permanent and wallets are essentially anonymous. To prevent financial loss, it is a good idea to follow best practices for secure programming.
