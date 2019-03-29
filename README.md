@@ -80,6 +80,6 @@ Saxon Knight
 https://github.com/ethereumbook/ethereumbook  
 
 [Remix]: https://remix.ethereum.org/
-[Phishable.sol]: module-9-lab-beginner/Phishable.sol
-[AttackContract.sol]: module-9-lab-beginner/AttackContract.sol
-[UnPhishable.sol]: module-9-lab-beginner/UnPhishable.sol
+[Phishable.sol]: https://github.com/UHMC/module-9-lab-beginner/blob/master/Phishable.sol
+[AttackContract.sol]: https://github.com/UHMC/module-9-lab-beginner/blob/master/AttackContract.sol
+[UnPhishable.sol]: https://github.com/UHMC/module-9-lab-beginner/blob/master/UnPhishable.sol
