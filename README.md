@@ -7,7 +7,7 @@ As with all software, there is a chance that a smart contract may be exploited. 
 | Attribute | Explanation |
 | - | - |
 | Summary | This assignment goes over exploiting a bad practice in smart contract programming. |
-| Topics  | Smart contracts, security, risk of financial loss. |
+| Topics | Smart contracts, security, risk of financial loss. |
 | Audience | Appropriate for CS1 or a later course. |
 | Difficulty | Beginner. |
 | Strengths | This assignment makes students aware of a type of security issue, attack scenario, and a best practice when writing code for smart contracts. |
