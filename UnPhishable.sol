@@ -1,13 +1,15 @@
+pragma solidity ^0.5.1;
+
 contract UnPhishable {
     address public owner;
-    constructor (address _owner) {
+    constructor (address _owner) public {
         owner = _owner;
     }
 
-    function () public payable {} // collect ether
+    function () external payable {} // collect ether
 
-    function withdrawAll(address _recipient) public {
+    function withdrawAll(address payable _recipient) public {
         require(msg.sender == owner);
-        _recipient.transfer(this.balance);
+        _recipient.transfer(address(this).balance);
     }
 }
