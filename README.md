@@ -15,7 +15,7 @@ As with all software, there is a chance that a smart contract may be exploited. 
 | Dependencies | Some programming knowledge and an internet-connected computer with a suitable browser for use of [the Remix IDE][Remix]. |
 | Variants | There are many other vulnerabilities which could be the focus of this lab instead. |
 
-## Assignment Instructions
+## Assignment Instructions (5 Minutes)
 1. In Solidity, there is a global variable called `tx.origin`, which contains the address of the account that originally sent the call or the transaction. In this lab, we will explore why using `tx.origin` as a form of authentication can lead to exploitation.
 2. First, we begin by creating a contract with a simple purpose such as temporarily holding Ether for the owner (just as legitimate contracts in use hold Ether to enable various functions). Copy the following code into [Remix]:  
     [_Phishable.sol_][Phishable.sol]
