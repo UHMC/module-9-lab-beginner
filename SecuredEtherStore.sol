@@ -1,4 +1,4 @@
-contract EtherStore {
+contract SecuredEtherStore {
 
     // initialize the mutex
     bool reEntrancyMutex = false;
