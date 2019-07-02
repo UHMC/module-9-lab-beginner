@@ -99,7 +99,7 @@ As with all software, there is a chance that a smart contract may be exploited. 
 9. A smart contract, **EtherStore** will be deployed to the blockchain.  
     ![etherstore-deployed.png](screenshots/etherstore-deployed.png)  
 
-10. Click the clipboard icon ![clipboard-icon.png](screenshots/clipboard-icon.png) to the right of the deployed `EtherStore` contract to copy its address; we will need it to tell the `Attack` contract what to attack.
+10. Click the clipboard icon ![clipboard-icon.png](screenshots/clipboard-icon.png) to the right of the deployed `EtherStore` contract to copy its address; we will need it to tell the `Attack` contract what to attack.  
     ![etherstore-deployed.png](screenshots/etherstore-deployed.png)  
 10. Select `Attack` in the box just above the orange `Deploy` button.  
     ![to-deploy-attack.png](screenshots/to-deploy-attack.png)  
