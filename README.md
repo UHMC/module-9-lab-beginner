@@ -88,24 +88,24 @@ As with all software, there is a chance that a smart contract may be exploited. 
 6. Click the solidity compiler plugin icon ![solidity-compiler-icon.png](screenshots/solidity-compiler-icon.png).
 7. Select compiler `0.4.26+commit.4563c3fc`.  
     ![compiler-version.png](screenshots/compiler-version.png)  
-7. Click the `EtherStore.sol` tab of the editor.  
+8. Click the `EtherStore.sol` tab of the editor.  
     ![etherstore-tab.png](screenshots/etherstore-tab.png)  
-8. Click the `Compile EtherStore.sol` button and wait for compilation to complete. For the purposes of this lab, you can safely ignore all (yellow) warnings.  
+9. Click the `Compile EtherStore.sol` button and wait for compilation to complete. For the purposes of this lab, you can safely ignore all (yellow) warnings.  
     ![compile-etherstore.png](screenshots/compile-etherstore.png)  
-9. Repeat the previous two steps for `Attack.sol`.
-8. Click the deploy-and-run plugin icon ![deploy-and-run-icon.png](screenshots/deploy-and-run-icon.png), and select `EtherStore` in the box just above the orange `Deploy` button.  
+10. Repeat the previous two steps for `Attack.sol`.
+11. Click the deploy-and-run plugin icon ![deploy-and-run-icon.png](screenshots/deploy-and-run-icon.png), and select `EtherStore` in the box just above the orange `Deploy` button.  
     ![to-deploy-etherstore.png](screenshots/to-deploy-etherstore.png)  
-10. Click the orange `Deploy` button ![orange-deploy-button.png](screenshots/orange-deploy-button.png).  
-9. A smart contract, **EtherStore** will be deployed to the blockchain.  
+12. Click the orange `Deploy` button ![orange-deploy-button.png](screenshots/orange-deploy-button.png).  
+13. A smart contract, **EtherStore** will be deployed to the blockchain.  
     ![etherstore-deployed.png](screenshots/etherstore-deployed.png)  
 
-10. Click the clipboard icon ![clipboard-icon.png](screenshots/clipboard-icon.png) to the right of the deployed `EtherStore` contract to copy its address; we will need it to tell the `Attack` contract what to attack.  
+14. Click the clipboard icon ![clipboard-icon.png](screenshots/clipboard-icon.png) to the right of the deployed `EtherStore` contract to copy its address; we will need it to tell the `Attack` contract what to attack.  
     ![etherstore-deployed.png](screenshots/etherstore-deployed.png)  
-10. Select `Attack` in the box just above the orange `Deploy` button.  
+15. Select `Attack` in the box just above the orange `Deploy` button.  
     ![to-deploy-attack.png](screenshots/to-deploy-attack.png)  
-12. Paste the previously-copied `EtherStore` address into the box just to the right of the orange `Deploy` button.  
+16. Paste the previously-copied `EtherStore` address into the box just to the right of the orange `Deploy` button.  
     ![address-pasted.png](screenshots/address-pasted.png)  
-x. We can prevent an attack like this in a few different ways. One way is to use the built-in `transfer` function, which only sends 2300 gas, insufficient to allow the current execution to call the `withdrawFunds` function again. An other way is to use what's known as the [checks-effects-interactions pattern][checks-effects-interactions], which would have us move lines 18 and 19 to before line 17, so that updates to checked variables are done before interaction with an outside entity. One more way we could prevent this attack is with an additional state variable, called a mutex or mutual exclusion variable, which acts as a lock and prevents further execution from occurring until the current function exits (and resets the mutex). Including all three methods (though any one would work), we have a more-secure `EtherStore`, which we'll call `SecuredEtherStore`:  
+17. We can prevent an attack like this in a few different ways. One way is to use the built-in `transfer` function, which only sends 2300 gas, insufficient to allow the current execution to call the `withdrawFunds` function again. An other way is to use what's known as the [checks-effects-interactions pattern][checks-effects-interactions], which would have us move lines 18 and 19 to before line 17, so that updates to checked variables are done before interaction with an outside entity. One more way we could prevent this attack is with an additional state variable, called a mutex or mutual exclusion variable, which acts as a lock and prevents further execution from occurring until the current function exits (and resets the mutex). Including all three methods (though any one would work), we have a more-secure `EtherStore`, which we'll call `SecuredEtherStore`:  
     [_SecuredEtherStore.sol_][SecuredEtherStore.sol]
     ```solidity
     contract SecuredEtherStore {
