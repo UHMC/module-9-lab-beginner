@@ -52,7 +52,7 @@ As with all software, there is a chance that a smart contract may be exploited. 
 4. Click the solidity compiler plugin icon ![solidity-compiler-icon.png](screenshots/solidity-compiler-icon.png).
 5. Select compiler `0.4.26+commit.4563c3fc`.  
     ![compiler-version.png](screenshots/compiler-version.png)  
-6. Click the `Compile EtherStore.sol` button and wait for compilation to complete. For the purposes of this lab, you can safely ignore all (orange) warnings.  
+6. Click the `Compile EtherStore.sol` button ![compile-etherstore-button.png](screenshots/compile-etherstore-button.png) and wait for compilation to complete. For the purposes of this lab, you can safely ignore all (orange) warnings.  
     ![compile-etherstore.png](screenshots/compile-etherstore.png)  
 7. Click the deploy-and-run plugin icon ![deploy-and-run-icon.png](screenshots/deploy-and-run-icon.png).
 8. Click the orange `Deploy` button ![orange-deploy-button.png](screenshots/orange-deploy-button.png).
