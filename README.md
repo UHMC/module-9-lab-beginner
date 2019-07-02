@@ -59,6 +59,12 @@ As with all software, there is a chance that a smart contract may be exploited. 
 9. A smart contract, **EtherStore** will be deployed to the blockchain. Click the arrow on the left of it to reveal its functions.  
     ![etherstore-deployed.png](screenshots/etherstore-deployed.png)  
     ![etherstore-functions.png](screenshots/etherstore-functions.png)
+10. In the value box, type `10`, and in the dropdown box next to it, select `ether`.  
+    ![value-box-with-ether.png](screenshots/value-box-with-ether.png)
+11. Click the `depositFunds` function button ![deposit-funds-button.png](screenshots/deposit-funds-button.png) under the `EtherStore` deployed contract.  
+    ![etherstore-functions.png](screenshots/etherstore-functions.png)
+12. Notice that the selected account has been debited 10 ether (as well as some gas fees for contract deployment and the deposit transaction), leaving 89.999... ether from the original 100.  
+    ![less-10-ether.png](screenshots/less-10-ether.png)
 10. We then create an other contract to attack `EtherStore.sol`. Create a new contract named `Attack.sol`, and copy/paste the following code:  
     [_Attack.sol_][Attack.sol]
     ```solidity
