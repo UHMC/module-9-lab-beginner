@@ -93,9 +93,9 @@ As with all software, there is a chance that a smart contract may be exploited. 
 8. Click the `Compile EtherStore.sol` button and wait for compilation to complete. For the purposes of this lab, you can safely ignore all (yellow) warnings.  
     ![compile-etherstore.png](screenshots/compile-etherstore.png)  
 9. Repeat the previous two steps for `Attack.sol`.
-7. Click the `EtherStore.sol` tab of the editor once more.  
-    ![etherstore-tab.png](screenshots/etherstore-tab.png)  
-8. Click the deploy-and-run plugin icon ![deploy-and-run-icon.png](screenshots/deploy-and-run-icon.png), and then click the orange `Deploy` button ![orange-deploy-button.png](screenshots/orange-deploy-button.png).
+8. Click the deploy-and-run plugin icon ![deploy-and-run-icon.png](screenshots/deploy-and-run-icon.png), and select `EtherStore` in the box just above the orange `Deploy` button.  
+    ![to-deploy-etherstore.png](screenshots/to-deploy-etherstore.png)  
+10. Click the orange `Deploy` button ![orange-deploy-button.png](screenshots/orange-deploy-button.png).
     ![deploy-and-run-view.png](screenshots/deploy-and-run-view.png)
 9. A smart contract, **EtherStore** will be deployed to the blockchain.
     ![contract-deployed.png](screenshots/contract-deployed.png)
