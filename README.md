@@ -86,6 +86,8 @@ As with all software, there is a chance that a smart contract may be exploited. 
     You should see two new icons in the leftmost pane: one, the solidity compiler, looks like an "s" ![solidity-compiler-icon.png](screenshots/solidity-compiler-icon.png) and the other, deploy and run, is the ethereum symbol with an arrow to the right ![deploy-and-run-icon.png](screenshots/deploy-and-run-icon.png).
     ![activated-plugin-icons.png](screenshots/activated-plugin-icons.png)
 6. Click the solidity compiler plugin icon ![solidity-compiler-icon.png](screenshots/solidity-compiler-icon.png).
+7. Select compiler `0.4.26+commit.4563c3fc`.  
+    ![compiler-version.png](screenshots/compiler-version.png)  
 7. Click the `EtherStore.sol` tab of the editor.  
     ![etherstore-tab.png](screenshots/etherstore-tab.png)  
 8. Click the `Compile EtherStore.sol` button and wait for compilation to complete.
