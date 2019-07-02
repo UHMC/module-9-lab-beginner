@@ -16,7 +16,7 @@ As with all software, there is a chance that a smart contract may be exploited. 
 | Variants | There are many other vulnerabilities which could be the focus of this lab instead. |
 
 ## Assignment Instructions
-1. First, we begin by creating a contract with a simple purpose, such as temporarily holding Ether for the owner(s). Click the plus icon ![plus-icon.png](screenshots/plus-icon.png) in the upper left corner of [Remix][Remix] to create a new document and name it `EtherStore.sol`. Then copy and paste the following code:  
+1. First, we begin by creating a contract with a simple purpose, such as temporarily holding Ether for the owner(s). Click the plus icon ![plus-icon.png](screenshots/plus-icon.png) in the upper left corner of [Remix][Remix] to create a new document and name it `EtherStore.sol`. Then copy and paste the following code into it:  
     [_EtherStore.sol_][EtherStore.sol]
     ```solidity
     contract EtherStore {
@@ -42,8 +42,24 @@ As with all software, there is a chance that a smart contract may be exploited. 
      }
     ```
     ![create-new-file](screenshots/create-new-file.png)  
-    ![etherstore-created.png](screenshots/etherstore-created.png)  
-2. We then create an other contract to attack `EtherStore.sol`. Create a new contract named `Attack.sol`, and copy/paste the following code:  
+    ![etherstore-created.png](screenshots/etherstore-created.png)
+2. Click on the plugin icon ![plug-icon.png](screenshots/plug-icon.png) in the left-most pane of Remix.
+    ![left-icon-pane.png](screenshots/left-icon-pane.png)
+3. Activate the `Deploy & Run Transactions` and `Solidity Compiler` plugins.
+    ![plugins-to-activate.png](screenshots/plugins-to-activate.png)
+    You should see two new icons in the leftmost pane: one, the solidity compiler, looks like an "s" ![solidity-compiler-icon.png](screenshots/solidity-compiler-icon.png) and the other, deploy and run, is the Ethereum symbol with an arrow to the right ![deploy-and-run-icon.png](screenshots/deploy-and-run-icon.png).  
+    ![activated-plugin-icons.png](screenshots/activated-plugin-icons.png)
+4. Click the solidity compiler plugin icon ![solidity-compiler-icon.png](screenshots/solidity-compiler-icon.png).
+5. Select compiler `0.4.26+commit.4563c3fc`.  
+    ![compiler-version.png](screenshots/compiler-version.png)  
+6. Click the `Compile EtherStore.sol` button and wait for compilation to complete. For the purposes of this lab, you can safely ignore all (yellow) warnings.  
+    ![compile-etherstore.png](screenshots/compile-etherstore.png)  
+7. Click the deploy-and-run plugin icon ![deploy-and-run-icon.png](screenshots/deploy-and-run-icon.png).
+8. Click the orange `Deploy` button ![orange-deploy-button.png](screenshots/orange-deploy-button.png).
+9. A smart contract, **EtherStore** will be deployed to the blockchain.  
+    ![etherstore-deployed.png](screenshots/etherstore-deployed.png)  
+
+10. We then create an other contract to attack `EtherStore.sol`. Create a new contract named `Attack.sol`, and copy/paste the following code:  
     [_Attack.sol_][Attack.sol]
     ```solidity
     import "EtherStore.sol";
@@ -79,25 +95,7 @@ As with all software, there is a chance that a smart contract may be exploited. 
     ```
     ![attack-created.png](screenshots/attack-created.png)  
 3. In `Attack`, observe that whenever this contract's `attackEtherStore` function is called with a transaction amount >= 1 ether, it then calls the `EtherStore` contract’s `depositFunds` function, followed immediately by `EtherStore`'s `withdrawFunds` function. The `EtherStore` contract verifies the balance, owner, withdrawal amount, and time since last withdrawal are all okay and proceeds to pay the attacking contract. So far, everything seems okay; however, once the `EtherStore` contract pays the `Attack` contract, execution of the code flows into the `Attack` contract's fallback function (the function called when a contract is paid any amount). Inside the `Attack` contract's fallback function, `EtherStore`'s balance is checked, and provided there is ether remaining to steal, the `withdrawFunds` function is called again. The `Attack` contract has, in effect, caused execution to "reenter" the `EtherStore` contract's `withdrawFunds` function before it could update the values it checks to ensure everything is okay before paying out.
-4. Click on the plugin icon ![plug-icon.png](screenshots/plug-icon.png) in the left-most pane of Remix.
-    ![left-icon-pane.png](screenshots/left-icon-pane.png)
-5. Activate the `Deploy & Run Transactions` and `Solidity Compiler` plugins.
-    ![plugins-to-activate.png](screenshots/plugins-to-activate.png)
-    You should see two new icons in the leftmost pane: one, the solidity compiler, looks like an "s" ![solidity-compiler-icon.png](screenshots/solidity-compiler-icon.png) and the other, deploy and run, is the ethereum symbol with an arrow to the right ![deploy-and-run-icon.png](screenshots/deploy-and-run-icon.png).
-    ![activated-plugin-icons.png](screenshots/activated-plugin-icons.png)
-6. Click the solidity compiler plugin icon ![solidity-compiler-icon.png](screenshots/solidity-compiler-icon.png).
-7. Select compiler `0.4.26+commit.4563c3fc`.  
-    ![compiler-version.png](screenshots/compiler-version.png)  
-8. Click the `EtherStore.sol` tab of the editor.  
-    ![etherstore-tab.png](screenshots/etherstore-tab.png)  
-9. Click the `Compile EtherStore.sol` button and wait for compilation to complete. For the purposes of this lab, you can safely ignore all (yellow) warnings.  
-    ![compile-etherstore.png](screenshots/compile-etherstore.png)  
 10. Repeat the previous two steps for `Attack.sol`.
-11. Click the deploy-and-run plugin icon ![deploy-and-run-icon.png](screenshots/deploy-and-run-icon.png), and select `EtherStore` in the box just above the orange `Deploy` button.  
-    ![to-deploy-etherstore.png](screenshots/to-deploy-etherstore.png)  
-12. Click the orange `Deploy` button ![orange-deploy-button.png](screenshots/orange-deploy-button.png).  
-13. A smart contract, **EtherStore** will be deployed to the blockchain.  
-    ![etherstore-deployed.png](screenshots/etherstore-deployed.png)  
 
 14. Click the clipboard icon ![clipboard-icon.png](screenshots/clipboard-icon.png) to the right of the deployed `EtherStore` contract to copy its address; we will need it to tell the `Attack` contract what to attack.  
     ![etherstore-deployed.png](screenshots/etherstore-deployed.png)  
