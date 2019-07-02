@@ -46,8 +46,8 @@ As with all software, there is a chance that a smart contract may be exploited. 
 2. Click on the plugin icon ![plug-icon.png](screenshots/plug-icon.png) in the left-most pane of Remix.  
     ![left-icon-pane.png](screenshots/left-icon-pane.png)
 3. Activate the `Deploy & Run Transactions` and `Solidity Compiler` plugins.
-    ![plugins-to-activate.png](screenshots/plugins-to-activate.png)
-    You should see two new icons in the leftmost pane: one, the solidity compiler, looks like an "s" ![solidity-compiler-icon.png](screenshots/solidity-compiler-icon.png) and the other, deploy and run, is the Ethereum symbol with an arrow to the right ![deploy-and-run-icon.png](screenshots/deploy-and-run-icon.png).  
+    ![plugins-to-activate.png](screenshots/plugins-to-activate.png)  
+    You should see two new icons in the leftmost pane: one, the solidity compiler ![solidity-compiler-icon.png](screenshots/solidity-compiler-icon.png), looks like an "s", and the other, deploy and run ![deploy-and-run-icon.png](screenshots/deploy-and-run-icon.png), is the Ethereum symbol with an arrow to the right.  
     ![activated-plugin-icons.png](screenshots/activated-plugin-icons.png)
 4. Click the solidity compiler plugin icon ![solidity-compiler-icon.png](screenshots/solidity-compiler-icon.png).
 5. Select compiler `0.4.26+commit.4563c3fc`.  
