@@ -43,7 +43,7 @@ As with all software, there is a chance that a smart contract may be exploited. 
     ```
     ![create-new-file](screenshots/create-new-file.png)  
     ![etherstore-created.png](screenshots/etherstore-created.png)
-2. Click on the plugin icon ![plug-icon.png](screenshots/plug-icon.png) in the left-most pane of Remix.
+2. Click on the plugin icon ![plug-icon.png](screenshots/plug-icon.png) in the left-most pane of Remix.  
     ![left-icon-pane.png](screenshots/left-icon-pane.png)
 3. Activate the `Deploy & Run Transactions` and `Solidity Compiler` plugins.
     ![plugins-to-activate.png](screenshots/plugins-to-activate.png)
