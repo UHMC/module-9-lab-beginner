@@ -106,7 +106,12 @@ As with all software, there is a chance that a smart contract may be exploited. 
 16. Repeat the previous compilation and deployment steps for the `Attack` contract, but just prior to deploying, we'll need to supply the `EtherStore` contract's address.
 17. Paste the previously-copied `EtherStore` address into the box just to the right of the orange `Deploy` button ![orange-deploy-button.png](screenshots/orange-deploy-button.png).  
     ![address-pasted.png](screenshots/address-pasted.png)  
-18. We can prevent an attack like this in a few different ways. One way is to use the built-in `transfer` function, which only sends 2300 gas, insufficient to allow the current execution to call the `withdrawFunds` function again. An other way is to use what's known as the [checks-effects-interactions pattern][checks-effects-interactions], which would have us move lines 18 and 19 to before line 17, so that updates to checked variables are done before interaction with an outside entity. One more way we could prevent this attack is with an additional state variable, called a mutex or mutual exclusion variable, which acts as a lock and prevents further execution from occurring until the current function exits (and resets the mutex). Including all three methods (though any one would work), we have a more-secure `EtherStore`, which we'll call `SecuredEtherStore`:  
+18. Deploy the `Attack` contract.
+19. Enter 1 ether in the value box where we previously entered 10 ether.
+20. Click the arrow to reveal the `Attack` contract's functions, and then click the attackEtherStore function button.
+21. Now click the collectEther function button.
+22. Observe that the account has been credited 9 ether (bringing it to 98.999...), when it should have only been possible for 1 ether to be withdrawn, yielding 2 ether expected (1 ether previously given to attack contract to enable the attack).
+23. We can prevent an attack like this in a few different ways. One way is to use the built-in `transfer` function, which only sends 2300 gas, insufficient to allow the current execution to call the `withdrawFunds` function again. An other way is to use what's known as the [checks-effects-interactions pattern][checks-effects-interactions], which would have us move lines 18 and 19 to before line 17, so that updates to checked variables are done before interaction with an outside entity. One more way we could prevent this attack is with an additional state variable, called a mutex or mutual exclusion variable, which acts as a lock and prevents further execution from occurring until the current function exits (and resets the mutex). Including all three methods (though any one would work), we have a more-secure `EtherStore`, which we'll call `SecuredEtherStore`:  
     [_SecuredEtherStore.sol_][SecuredEtherStore.sol]
     ```solidity
     contract SecuredEtherStore {
@@ -138,6 +143,7 @@ As with all software, there is a chance that a smart contract may be exploited. 
         }
      }
     ```
+24. Repeating the procedures above but using the new `SecuredEtherStore` contract will result in the attack failing; give it a try!
 
 ## Credits
 Dr. Debasis Bhattacharya  
