@@ -68,7 +68,7 @@ As with all software, there is a chance that a smart contract may be exploited. 
 13. We then create an other contract to attack `EtherStore.sol`. Create a new contract named `Attack.sol`, and copy/paste the following code:  
     [_Attack.sol_][Attack.sol]
     ```solidity
-    import "EtherStore.sol";
+    import "./EtherStore.sol";
 
     contract Attack {
       EtherStore public etherStore;
