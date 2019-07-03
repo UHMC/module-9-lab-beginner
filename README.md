@@ -16,7 +16,7 @@ As with all software, there is a chance that a smart contract may be exploited. 
 | Variants | There are many other vulnerabilities which could be the focus of this lab instead. |
 
 ## Assignment Instructions
-1. First, we begin by creating a contract with a simple purpose, such as temporarily holding Ether for the owner(s). Copy the following code into [Remix][Remix]:  
+1. First, we begin by creating a contract with a simple purpose, such as temporarily holding Ether for the owner(s). Click the plus icon ![plus-icon.png](screenshots/plus-icon.png) in the upper left corner of [Remix][Remix] to create a new document and name it `EtherStore.sol`. Then copy and paste the following code into it:  
     [_EtherStore.sol_][EtherStore.sol]
     ```solidity
     contract EtherStore {
@@ -41,10 +41,34 @@ As with all software, there is a chance that a smart contract may be exploited. 
         }
      }
     ```
-2. We then create another contract to attack `EtherStore.sol`. Create a new contract, `Attack.sol`:  
+    ![create-new-file](screenshots/create-new-file.png)  
+    ![etherstore-created.png](screenshots/etherstore-created.png)
+2. Click on the plugin icon ![plug-icon.png](screenshots/plug-icon.png) in the left-most pane of Remix.  
+    ![left-icon-pane.png](screenshots/left-icon-pane.png)
+3. Activate the `Deploy & Run Transactions` and `Solidity Compiler` plugins.
+    ![plugins-to-activate.png](screenshots/plugins-to-activate.png)  
+    You should see two new icons in the leftmost pane: one, the solidity compiler ![solidity-compiler-icon.png](screenshots/solidity-compiler-icon.png), looks like an "s", and the other, deploy and run ![deploy-and-run-icon.png](screenshots/deploy-and-run-icon.png), is the Ethereum symbol with an arrow to the right.  
+    ![activated-plugin-icons.png](screenshots/activated-plugin-icons.png)
+4. Click the solidity compiler plugin icon ![solidity-compiler-icon.png](screenshots/solidity-compiler-icon.png).
+5. Select compiler `0.4.26+commit.4563c3fc`.  
+    ![compiler-version.png](screenshots/compiler-version.png)  
+6. Click the `Compile EtherStore.sol` button ![compile-etherstore-button.png](screenshots/compile-etherstore-button.png) and wait for compilation to complete. For the purposes of this lab, you can safely ignore all (orange) warnings.  
+    ![compile-etherstore.png](screenshots/compile-etherstore.png)  
+7. Click the deploy-and-run plugin icon ![deploy-and-run-icon.png](screenshots/deploy-and-run-icon.png).
+8. Click the orange `Deploy` button ![orange-deploy-button.png](screenshots/orange-deploy-button.png).
+9. A smart contract, **EtherStore** will be deployed to the blockchain. Click the arrow on the left of it to reveal its functions.  
+    ![etherstore-deployed.png](screenshots/etherstore-deployed.png)  
+    ![etherstore-functions.png](screenshots/etherstore-functions.png)
+10. In the value box, type `10`, and in the dropdown box next to it, select `ether`.  
+    ![value-box-with-ether.png](screenshots/value-box-with-ether.png)
+11. Click the `depositFunds` function button ![deposit-funds-button.png](screenshots/deposit-funds-button.png) under the `EtherStore` deployed contract.  
+    ![etherstore-functions.png](screenshots/etherstore-functions.png)
+12. Notice that the selected account has been debited `10 ether` (as well as some gas fees for contract deployment and the deposit transaction), leaving `89.999... ether` from the original `100 ether`.  
+    ![less-10-ether.png](screenshots/less-10-ether.png)
+13. We then create an other contract to attack `EtherStore.sol`. Create a new contract named `Attack.sol`, and copy/paste the following code:  
     [_Attack.sol_][Attack.sol]
     ```solidity
-    import "EtherStore.sol";
+    import "./EtherStore.sol";
 
     contract Attack {
       EtherStore public etherStore;
@@ -75,8 +99,21 @@ As with all software, there is a chance that a smart contract may be exploited. 
       }
     }
     ```
-3. In `Attack`, observe that whenever this contract's `attackEtherStore` function is called with a transaction amount >= 1 ether, it then calls the `EtherStore` contract’s `depositFunds` function, followed immediately by `EtherStore`'s `withdrawFunds` function. The `EtherStore` contract verifies the balance, owner, withdrawal amount, and time since last withdrawal are all okay and proceeds to pay the attacking contract. So far, everything seems okay; however, once the `EtherStore` contract pays the `Attack` contract, execution of the code flows into the `Attack` contract's fallback function (the function called when a contract is paid any amount). Inside the `Attack` contract's fallback function, `EtherStore`'s balance is checked, and provided there is ether remaining to steal, the `withdrawFunds` function is called again. The `Attack` contract has, in effect, caused execution to "reenter" the `EtherStore` contract's `withdrawFunds` function before it could update the values it checks to ensure everything is okay before paying out.
-4. We can prevent an attack like this a few different ways. One way is to use the built-in `transfer` function, which only sends 2300 gas, insufficient to allow the current execution to call the `withdrawFunds` function again. An other way is to use what's known as the [checks-effects-interactions pattern][checks-effects-interactions], which would have us move lines 18 and 19 to before line 17, so that updates to checked variables are done before interaction with an outside entity. One more way we could prevent this attack is with an additional state variable, called a mutex or mutual exclusion variable, which acts as a lock and prevents further execution from occurring until the current function exits (and resets the mutex). Including all three methods (though any one would work), we have a more-secure `EtherStore`, which we'll call `SecuredEtherStore`:  
+    ![attack-created.png](screenshots/attack-created.png)  
+14. In `Attack.sol`, observe that whenever this contract's `attackEtherStore` function is called with a transaction amount >= 1 ether, it then calls the `EtherStore` contract’s `depositFunds` function, followed immediately by `EtherStore`'s `withdrawFunds` function. The `EtherStore` contract verifies the balance, owner, withdrawal amount, and time since last withdrawal are all okay and proceeds to pay the attacking contract. So far, everything seems okay; however, once the `EtherStore` contract pays the `Attack` contract, execution of the code flows into the `Attack` contract's fallback function (the function called when a contract is paid any amount). Inside the `Attack` contract's fallback function, `EtherStore`'s balance is checked, and provided there is ether remaining to steal, the `withdrawFunds` function is called again. The `Attack` contract has, in effect, caused execution to "reenter" the `EtherStore` contract's `withdrawFunds` function before it could update the values it checks to ensure everything is okay before paying out.
+15. Click the deploy-and-run plugin icon ![deploy-and-run-icon.png](screenshots/deploy-and-run-icon.png).
+16. Click the clipboard icon ![clipboard-icon.png](screenshots/clipboard-icon.png) to the right of the deployed `EtherStore` contract to copy its address; we will need it to tell the `Attack` contract what to attack.  
+    ![clipboard-surroundings.png](screenshots/clipboard-surroundings.png)
+17. Choose a new account with 100 ether from the dropdown to act as the attacking account.
+18. Repeat the previous compilation and deployment steps for the `Attack` contract, but just prior to deploying, we'll need to supply the `EtherStore` contract's address.
+19. Paste the previously-copied `EtherStore` address into the box just to the right of the orange `Deploy` button.  
+    ![address-pasted.png](screenshots/address-pasted.png)  
+20. Deploy the `Attack` contract.
+21. Enter 1 ether in the value box where we previously entered 10 ether.
+22. Click the arrow to reveal the `Attack` contract's functions, and then click the `attackEtherStore` function button.
+23. Now click the `collectEther` function button.
+24. Observe that the account has been credited 10 ether (bringing it to 108.999...), when it should have only been possible for the deposited 1 ether to be withdrawn.
+25. We can prevent an attack like this in a few different ways. One way is to use the built-in `transfer` function, which only sends 2300 gas, insufficient to allow the current execution to call the `withdrawFunds` function again. An other way is to use what's known as the [checks-effects-interactions pattern][checks-effects-interactions], which would have us move lines 18 and 19 to before line 17, so that updates to checked variables are done before interaction with an outside entity. One more way we could prevent this attack is with an additional state variable, called a mutex or mutual exclusion variable, which acts as a lock and prevents further execution from occurring until the current function exits (and resets the mutex). Including all three methods (though any one would work), we have a more-secure `EtherStore`, which we'll call `SecuredEtherStore`:  
     [_SecuredEtherStore.sol_][SecuredEtherStore.sol]
     ```solidity
     contract SecuredEtherStore {
@@ -108,6 +145,7 @@ As with all software, there is a chance that a smart contract may be exploited. 
         }
      }
     ```
+26. Repeating the procedures above but using the new `SecuredEtherStore` contract will result in the attack failing; give it a try!
 
 ## Credits
 Dr. Debasis Bhattacharya  
