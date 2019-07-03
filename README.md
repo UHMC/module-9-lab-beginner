@@ -65,7 +65,7 @@ As with all software, there is a chance that a smart contract may be exploited. 
     ![etherstore-functions.png](screenshots/etherstore-functions.png)
 12. Notice that the selected account has been debited `10 ether` (as well as some gas fees for contract deployment and the deposit transaction), leaving `89.999... ether` from the original `100 ether`.  
     ![less-10-ether.png](screenshots/less-10-ether.png)
-10. We then create an other contract to attack `EtherStore.sol`. Create a new contract named `Attack.sol`, and copy/paste the following code:  
+13. We then create an other contract to attack `EtherStore.sol`. Create a new contract named `Attack.sol`, and copy/paste the following code:  
     [_Attack.sol_][Attack.sol]
     ```solidity
     import "EtherStore.sol";
@@ -100,16 +100,13 @@ As with all software, there is a chance that a smart contract may be exploited. 
     }
     ```
     ![attack-created.png](screenshots/attack-created.png)  
-3. In `Attack`, observe that whenever this contract's `attackEtherStore` function is called with a transaction amount >= 1 ether, it then calls the `EtherStore` contract’s `depositFunds` function, followed immediately by `EtherStore`'s `withdrawFunds` function. The `EtherStore` contract verifies the balance, owner, withdrawal amount, and time since last withdrawal are all okay and proceeds to pay the attacking contract. So far, everything seems okay; however, once the `EtherStore` contract pays the `Attack` contract, execution of the code flows into the `Attack` contract's fallback function (the function called when a contract is paid any amount). Inside the `Attack` contract's fallback function, `EtherStore`'s balance is checked, and provided there is ether remaining to steal, the `withdrawFunds` function is called again. The `Attack` contract has, in effect, caused execution to "reenter" the `EtherStore` contract's `withdrawFunds` function before it could update the values it checks to ensure everything is okay before paying out.
-10. Repeat the previous two steps for `Attack.sol`.
-
-14. Click the clipboard icon ![clipboard-icon.png](screenshots/clipboard-icon.png) to the right of the deployed `EtherStore` contract to copy its address; we will need it to tell the `Attack` contract what to attack.  
-    ![etherstore-deployed.png](screenshots/etherstore-deployed.png)  
-15. Select `Attack` in the box just above the orange `Deploy` button.  
-    ![to-deploy-attack.png](screenshots/to-deploy-attack.png)  
-16. Paste the previously-copied `EtherStore` address into the box just to the right of the orange `Deploy` button.  
+14. In `Attack`, observe that whenever this contract's `attackEtherStore` function is called with a transaction amount >= 1 ether, it then calls the `EtherStore` contract’s `depositFunds` function, followed immediately by `EtherStore`'s `withdrawFunds` function. The `EtherStore` contract verifies the balance, owner, withdrawal amount, and time since last withdrawal are all okay and proceeds to pay the attacking contract. So far, everything seems okay; however, once the `EtherStore` contract pays the `Attack` contract, execution of the code flows into the `Attack` contract's fallback function (the function called when a contract is paid any amount). Inside the `Attack` contract's fallback function, `EtherStore`'s balance is checked, and provided there is ether remaining to steal, the `withdrawFunds` function is called again. The `Attack` contract has, in effect, caused execution to "reenter" the `EtherStore` contract's `withdrawFunds` function before it could update the values it checks to ensure everything is okay before paying out.
+15. Click the clipboard icon ![clipboard-icon.png](screenshots/clipboard-icon.png) to the right of the deployed `EtherStore` contract to copy its address; we will need it to tell the `Attack` contract what to attack.  
+    ![clipboard-surroundings.png](screenshots/clipboard-surroundings.png)
+16. Repeat the previous compilation and deployment steps for the `Attack` contract, but just prior to deploying, we'll need to supply the `EtherStore` contract's address.
+17. Paste the previously-copied `EtherStore` address into the box just to the right of the orange `Deploy` button ![orange-deploy-button.png](screenshots/orange-deploy-button.png).  
     ![address-pasted.png](screenshots/address-pasted.png)  
-17. We can prevent an attack like this in a few different ways. One way is to use the built-in `transfer` function, which only sends 2300 gas, insufficient to allow the current execution to call the `withdrawFunds` function again. An other way is to use what's known as the [checks-effects-interactions pattern][checks-effects-interactions], which would have us move lines 18 and 19 to before line 17, so that updates to checked variables are done before interaction with an outside entity. One more way we could prevent this attack is with an additional state variable, called a mutex or mutual exclusion variable, which acts as a lock and prevents further execution from occurring until the current function exits (and resets the mutex). Including all three methods (though any one would work), we have a more-secure `EtherStore`, which we'll call `SecuredEtherStore`:  
+18. We can prevent an attack like this in a few different ways. One way is to use the built-in `transfer` function, which only sends 2300 gas, insufficient to allow the current execution to call the `withdrawFunds` function again. An other way is to use what's known as the [checks-effects-interactions pattern][checks-effects-interactions], which would have us move lines 18 and 19 to before line 17, so that updates to checked variables are done before interaction with an outside entity. One more way we could prevent this attack is with an additional state variable, called a mutex or mutual exclusion variable, which acts as a lock and prevents further execution from occurring until the current function exits (and resets the mutex). Including all three methods (though any one would work), we have a more-secure `EtherStore`, which we'll call `SecuredEtherStore`:  
     [_SecuredEtherStore.sol_][SecuredEtherStore.sol]
     ```solidity
     contract SecuredEtherStore {
