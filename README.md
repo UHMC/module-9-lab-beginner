@@ -16,7 +16,7 @@ As with all software, there is a chance that a smart contract may be exploited. 
 | Variants | There are many other vulnerabilities which could be the focus of this lab instead. |
 
 ## Assignment Instructions
-1. First, we begin by creating a contract with a simple purpose, such as temporarily holding Ether for the owner(s). Click the plus icon ![plus-icon.png](screenshots/plus-icon.png) in the upper left corner of [Remix][Remix] to create a new document and name it `EtherStore.sol`. Then copy and paste the following code into it:  
+1. First, we begin by creating a contract with a simple purpose, such as temporarily holding Ether for the owner(s). Click the plus icon ![plus-icon.png](screenshots/plus-icon.png) in the upper left corner of [Remix][Remix] to create a new document and name it `EtherStore.sol`. Then, copy and paste the following code into it:  
     [_EtherStore.sol_][EtherStore.sol]
     ```solidity
     contract EtherStore {
@@ -65,7 +65,7 @@ As with all software, there is a chance that a smart contract may be exploited. 
     ![etherstore-functions.png](screenshots/etherstore-functions.png)
 12. Notice that the selected account has been debited `10 ether` (as well as some gas fees for contract deployment and the deposit transaction), leaving `89.999... ether` from the original `100 ether`.  
     ![less-10-ether.png](screenshots/less-10-ether.png)
-13. We then create an other contract to attack `EtherStore.sol`. Create a new contract named `Attack.sol`, and copy/paste the following code:  
+13. We then create an other contract to attack `EtherStore.sol`. Click the file explorers icon ![file-explorers-icon.png](screenshots/file-explorers-icon.png) in the left pane, and create a new contract named `Attack.sol`. Then, copy and paste the following code:  
     [_Attack.sol_][Attack.sol]
     ```solidity
     import "./EtherStore.sol";
